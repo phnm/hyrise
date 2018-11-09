@@ -40,7 +40,7 @@ class RangeFilterTest : public ::testing::Test {
     }
 
     // Find `gap_count` largest gaps. We use an std::{{set}} to discard repeated
-    // values and directly iterate over an sorted order.
+    // values and directly iterate over them in sorted order.
     auto value_set = std::set<T>(values.begin(), values.end(), std::less<T>());
     std::vector<std::pair<T, T>> begin_length_pairs;
 
@@ -201,7 +201,7 @@ TYPED_TEST(RangeFilterTest, LargeValueDomain) {
 
     // additionally, test for further values
     for (auto i = size_t{0}; i < 100; ++i) {
-      EXPECT_TRUE(filter->can_prune(PredicateCondition::Equals, {get_random_number<TypeParam>(rng, 1000, 1000)}));
+      EXPECT_TRUE(filter->can_prune(PredicateCondition::Equals, {get_random_number<TypeParam>(rng, -999, 999)}));
     }
   }
 }
