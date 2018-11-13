@@ -287,7 +287,8 @@ std::vector<std::shared_ptr<AbstractTask>> BenchmarkRunner::_schedule_or_execute
 
 std::vector<std::shared_ptr<AbstractTask>> BenchmarkRunner::_schedule_query(
     const QueryID query_id, const bool prepare, const std::function<void()>& done_callback) {
-  const auto& sql = prepare ? _query_generator->preparation_queries()[query_id] : _query_generator->build_query(query_id);
+  const auto& sql =
+      prepare ? _query_generator->preparation_queries()[query_id] : _query_generator->build_query(query_id);
 
   auto query_tasks = std::vector<std::shared_ptr<AbstractTask>>();
 
@@ -310,8 +311,10 @@ std::vector<std::shared_ptr<AbstractTask>> BenchmarkRunner::_schedule_query(
   return query_tasks;
 }
 
-void BenchmarkRunner::_execute_query(const QueryID query_id, const bool prepare, const std::function<void()>& done_callback) {
-  const auto& sql = prepare ? _query_generator->preparation_queries()[query_id] : _query_generator->build_query(query_id);
+void BenchmarkRunner::_execute_query(const QueryID query_id, const bool prepare,
+                                     const std::function<void()>& done_callback) {
+  const auto& sql =
+      prepare ? _query_generator->preparation_queries()[query_id] : _query_generator->build_query(query_id);
 
   _config.out << "- Preparing " << _query_generator->query_names()[query_id] << std::endl;
 
@@ -438,7 +441,7 @@ nlohmann::json BenchmarkRunner::create_context(const BenchmarkConfig& config) {
   timestamp_stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
 
   std::stringstream compiler;
-// clang-format off
+  // clang-format off
   #if defined(__clang__)
     compiler << "clang " << __clang_major__ << "." << __clang_minor__ << "." << __clang_patchlevel__;
   #elif defined(__GNUC__)
