@@ -228,18 +228,20 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
       const auto group_by_column_id = aggregate_node->left_input()->find_column_id(*group_by_expression);
       Assert(group_by_column_id, "Column in GROUP BY clause does not exist in input.");
 
-      const auto max_distinct_count = std::max_element(
-          input_table_statistics->chunk_statistics.cbegin(), input_table_statistics->chunk_statistics.cend(),
-          [](const auto& lhs, const auto& lhr) {
-            const auto left_hist =
-                CardinalityEstimator::get_best_available_histogram(lhs->segment_statistics[*group_by_column_id]);
-            const auto right_hist =
-                CardinalityEstimator::get_best_available_histogram(rhs->segment_statistics[*group_by_column_id]);
-            Assert(left_hist && right_hist, "NYI");
-            return *left_hist->total_distinct_count() < *right_hist->total_distinct_count();
-          });
+      HistogramCountType max_distinct_count = 0u;
+
+      resolve_data_type(group_by_expression->data_type(), [&](const auto data_type_t) {
+        using T = typename decltype(data_type_t)::type;
+        for (const auto& input_chunk_statistics : input_table_statistics->chunk_statistics) {
+          const auto seg_stats = std::static_pointer_cast<SegmentStatistics2<T>>(
+              input_chunk_statistics->segment_statistics[*group_by_column_id]);
+          const auto hist = CardinalityEstimator::get_best_available_histogram(*seg_stats);
+          max_distinct_count = std::max(max_distinct_count, hist->total_distinct_count());
+        }
+      });
 
       const auto output_chunk_statistics = std::make_shared<ChunkStatistics2>(max_distinct_count);
+
       for (const auto& expression : aggregate_node->column_expressions()) {
         resolve_data_type(expression->data_type(), [&](const auto data_type_t) {
           using ColumnDataType = typename decltype(data_type_t)::type;
