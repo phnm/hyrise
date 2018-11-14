@@ -221,6 +221,8 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
               std::make_shared<SegmentStatistics2<ColumnDataType>>());
         });
       }
+
+      output_table_statistics->chunk_statistics.emplace_back(output_chunk_statistics);
     } else {
       output_table_statistics->chunk_statistics.reserve(input_table_statistics->chunk_statistics.size());
 
