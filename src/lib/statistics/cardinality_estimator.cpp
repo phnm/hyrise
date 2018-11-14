@@ -126,7 +126,8 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
           const auto& cached_chunk_statistics = cached_table_statistics->chunk_statistics[chunk_id];
           table_statistics->chunk_statistics[chunk_id] =
               std::make_shared<ChunkStatistics2>(cached_chunk_statistics->row_count);
-          table_statistics->chunk_statistics[chunk_id]->segment_statistics.resize(cached_chunk_statistics->segment_statistics.size());
+          table_statistics->chunk_statistics[chunk_id]->segment_statistics.resize(
+              cached_chunk_statistics->segment_statistics.size());
           table_statistics->chunk_statistics[chunk_id]->approx_invalid_row_count =
               cached_chunk_statistics->approx_invalid_row_count;
         }
@@ -138,9 +139,9 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
           Assert(column_id_iter != cache_entry.column_expressions.end(), "Column not found in cached statistics");
           const auto cached_column_id = column_id_iter->second;
 
-          for (auto chunk_id = ChunkID{0};chunk_id < table_statistics->chunk_statistics.size(); ++chunk_id ) {
+          for (auto chunk_id = ChunkID{0}; chunk_id < table_statistics->chunk_statistics.size(); ++chunk_id) {
             table_statistics->chunk_statistics[chunk_id]->segment_statistics[column_id] =
-            cached_table_statistics->chunk_statistics[chunk_id]->segment_statistics[cached_column_id];
+                cached_table_statistics->chunk_statistics[chunk_id]->segment_statistics[cached_column_id];
           }
         }
 
@@ -206,27 +207,43 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
   if (const auto aggregate_node = std::dynamic_pointer_cast<AggregateNode>(lqp)) {
     const auto input_table_statistics = estimate_statistics(lqp->left_input(), context);
     output_table_statistics = std::make_shared<TableStatistics2>();
-    output_table_statistics->chunk_statistics.reserve(input_table_statistics->chunk_statistics.size());
 
-    for (const auto& input_chunk_statistics : input_table_statistics->chunk_statistics) {
-      const auto output_chunk_statistics = std::make_shared<ChunkStatistics2>(input_chunk_statistics->row_count);
+    if (aggregate_node->group_by_expressions.empty()) {
+      const auto output_chunk_statistics = std::std::make_shared<ChunkStatistics2>(1u);
       output_chunk_statistics->segment_statistics.reserve(aggregate_node->column_expressions().size());
 
+      // TODO(anyone): we could create SegmentStatistics containing actual information for simple aggregate functions.
+      // For example, if the query was "SELECT COUNT(*) FROM t" we could ask the input statistics for its total count.
       for (const auto& expression : aggregate_node->column_expressions()) {
-        const auto input_column_id = aggregate_node->left_input()->find_column_id(*expression);
-        if (input_column_id) {
+        resolve_data_type(expression->data_type(), [&](const auto data_type_t) {
+          using ColumnDataType = typename decltype(data_type_t)::type;
           output_chunk_statistics->segment_statistics.emplace_back(
-              input_chunk_statistics->segment_statistics[*input_column_id]);
-        } else {
-          resolve_data_type(expression->data_type(), [&](const auto data_type_t) {
-            using ColumnDataType = typename decltype(data_type_t)::type;
-            output_chunk_statistics->segment_statistics.emplace_back(
-                std::make_shared<SegmentStatistics2<ColumnDataType>>());
-          });
-        }
+              std::make_shared<SegmentStatistics2<ColumnDataType>>());
+        });
       }
+    } else {
+      output_table_statistics->chunk_statistics.reserve(input_table_statistics->chunk_statistics.size());
 
-      output_table_statistics->chunk_statistics.emplace_back(output_chunk_statistics);
+      for (const auto& input_chunk_statistics : input_table_statistics->chunk_statistics) {
+        const auto output_chunk_statistics = std::make_shared<ChunkStatistics2>(input_chunk_statistics->row_count);
+        output_chunk_statistics->segment_statistics.reserve(aggregate_node->column_expressions().size());
+
+        for (const auto& expression : aggregate_node->column_expressions()) {
+          const auto input_column_id = aggregate_node->left_input()->find_column_id(*expression);
+          if (input_column_id) {
+            output_chunk_statistics->segment_statistics.emplace_back(
+                input_chunk_statistics->segment_statistics[*input_column_id]);
+          } else {
+            resolve_data_type(expression->data_type(), [&](const auto data_type_t) {
+              using ColumnDataType = typename decltype(data_type_t)::type;
+              output_chunk_statistics->segment_statistics.emplace_back(
+                  std::make_shared<SegmentStatistics2<ColumnDataType>>());
+            });
+          }
+        }
+
+        output_table_statistics->chunk_statistics.emplace_back(output_chunk_statistics);
+      }
     }
   }
 
@@ -311,7 +328,7 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
       case JoinMode::Anti: {
         output_table_statistics = left_input_table_statistics;
       } break;
-      
+
       // TODO(anybody) For now, handle outer joins just as inner joins
       case JoinMode::Left:
       case JoinMode::Right:
