@@ -3,7 +3,7 @@
 #include "types.hpp"
 #include "logical_query_plan/join_node.hpp"
 #include "logical_query_plan/stored_table_node.hpp"
-#include "logical_query_plan/limit.hpp"
+#include "logical_query_plan/projection_node.hpp"
 #include "logical_query_plan/predicate_node.hpp"
 #include "expression/expression_functional.hpp"
 #include "statistics/cardinality_estimator.hpp"
@@ -24,7 +24,7 @@ int main() {
   const auto l_partkey = lineitem_node->get_column("l_partkey");
 
   const auto lqp =
-  LimitNode::make(value_(1),
+  ProjectionNode::make(expression_vector(p_type, l_partkey),
   JoinNode::make(JoinMode::Inner, equals_(p_partkey, l_partkey),
     PredicateNode::make(equals_(p_type, "ECONOMY ANODIZED STEEL"),
       part_node),

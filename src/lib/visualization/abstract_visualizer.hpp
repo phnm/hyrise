@@ -21,7 +21,7 @@ struct GraphvizConfig {
 };
 
 struct VizGraphInfo {
-  std::string bg_color = "black";
+  std::string bg_color = "white";
   std::string rankdir = "BT";
   std::string ratio = "compress";
 };
@@ -29,16 +29,16 @@ struct VizGraphInfo {
 struct VizVertexInfo {
   uintptr_t id;
   std::string label;
-  std::string color = "white";
-  std::string font_color = "white";
+  std::string color = "black";
+  std::string font_color = "black";
   std::string shape = "rectangle";
   double pen_width = 1.0;
 };
 
 struct VizEdgeInfo {
   std::string label;
-  std::string color = "white";
-  std::string font_color = "white";
+  std::string color = "black";
+  std::string font_color = "black";
   double pen_width = 1.0;
   std::string dir = "forward";
   std::string style = "solid";
