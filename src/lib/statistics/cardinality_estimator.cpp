@@ -209,7 +209,7 @@ std::shared_ptr<TableStatistics2> CardinalityEstimator::estimate_statistics(
     output_table_statistics = std::make_shared<TableStatistics2>();
 
     if (aggregate_node->group_by_expressions.empty()) {
-      const auto output_chunk_statistics = std::std::make_shared<ChunkStatistics2>(1u);
+      const auto output_chunk_statistics = std::make_shared<ChunkStatistics2>(1u);
       output_chunk_statistics->segment_statistics.reserve(aggregate_node->column_expressions().size());
 
       // TODO(anyone): we could create SegmentStatistics containing actual information for simple aggregate functions.
