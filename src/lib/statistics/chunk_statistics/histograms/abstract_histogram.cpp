@@ -475,10 +475,6 @@ CardinalityEstimate AbstractHistogram<T>::_estimate_cardinality(
       Assert(static_cast<bool>(variant_value2), "Between operator needs two values.");
       const auto value2 = type_cast<T>(*variant_value2);
 
-      std::cout << " Estimating BETWEEN with histogram {" << std::endl;
-      std::cout << description(true) << std::endl;
-      std::cout << " }" << std::endl;
-
       if (value2 < value) {
         return {Cardinality{0}, EstimateType::MatchesNone};
       }

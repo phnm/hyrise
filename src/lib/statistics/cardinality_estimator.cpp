@@ -615,12 +615,6 @@ std::shared_ptr<ChunkStatistics2> CardinalityEstimator::estimate_scan_predicates
             operator_scan_predicate.predicate_condition, boost::get<AllTypeVariant>(operator_scan_predicate.value),
             value2_all_type_variant);
 
-        if (operator_scan_predicate.predicate_condition == PredicateCondition::Between) {
-          std::cout << " Result of BETWEEN estimation (new) {" << std::endl;
-          std::cout << "   " << cardinality_estimate << std::endl;
-          std::cout << " }" << std::endl;
-        }
-
         if (predicate_input_chunk_statistics->row_count == 0 ||
             cardinality_estimate.type == EstimateType::MatchesNone) {
           // No matches in this Chunk estimated; prune the ChunkStatistics

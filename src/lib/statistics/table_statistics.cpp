@@ -37,13 +37,7 @@ TableStatistics TableStatistics::estimate_predicate(const ColumnID column_id,
   if (predicate_condition == PredicateCondition::Between) {
     DebugAssert(value2, "Expected second value to be passed in for BETWEEN");
     auto table_statistics = estimate_predicate(column_id, PredicateCondition::GreaterThanEquals, value);
-    auto table_statistics2 = table_statistics.estimate_predicate(column_id, PredicateCondition::LessThanEquals, *value2);
-
-    std::cout << " Result of BETWEEN estimation (old) {" << std::endl;
-    std::cout << "   " << table_statistics2.row_count() << std::endl;
-    std::cout << " }" << std::endl;
-
-    return table_statistics2;
+    return table_statistics.estimate_predicate(column_id, PredicateCondition::LessThanEquals, *value2);
   }
 
   // TODO(anybody) we don't do (Not)Like estimations yet, thus resort to magic numbers
