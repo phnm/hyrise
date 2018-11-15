@@ -195,7 +195,7 @@ std::shared_ptr<AbstractLQPNode> DpCcp::_add_join_to_plan(
   join_predicates_and_cost.reserve(join_predicates.size());
   for (const auto& join_predicate : join_predicates) {
     const auto join_node = JoinNode::make(JoinMode::Inner, join_predicate, left_lqp, right_lqp);
-    join_predicates_and_cost.emplace_back(join_predicate, _cost_estimator->estimate_plan_cost(join_node, context));
+    join_predicates_and_cost.emplace_back(join_predicate, cost_estimator.estimate_plan_cost(join_node, context));
   }
 
   std::sort(join_predicates_and_cost.begin(), join_predicates_and_cost.end(),

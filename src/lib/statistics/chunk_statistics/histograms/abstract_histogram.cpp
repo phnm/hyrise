@@ -666,7 +666,7 @@ float AbstractHistogram<T>::estimate_distinct_count(const PredicateCondition pre
     return 0.f;
   }
 
-  const auto value = type_cast<T>(variant_value);
+  const auto value = type_cast_variant<T>(variant_value);
 
   switch (predicate_type) {
     case PredicateCondition::Equals: {
@@ -709,7 +709,7 @@ float AbstractHistogram<T>::estimate_distinct_count(const PredicateCondition pre
       return total_distinct_count() - estimate_distinct_count(PredicateCondition::LessThanEquals, value);
     case PredicateCondition::Between: {
       Assert(static_cast<bool>(variant_value2), "Between operator needs two values.");
-      const auto value2 = type_cast<T>(*variant_value2);
+      const auto value2 = type_cast_variant<T>(*variant_value2);
 
       if (value2 < value) {
         return 0.f;
@@ -750,7 +750,7 @@ std::shared_ptr<AbstractStatisticsObject> AbstractHistogram<T>::slice_with_predi
     return std::make_shared<EmptyStatisticsObject>();
   }
 
-  const auto value = type_cast<T>(variant_value);
+  const auto value = type_cast_variant<T>(variant_value);
 
   std::vector<T> bin_minima;
   std::vector<T> bin_maxima;

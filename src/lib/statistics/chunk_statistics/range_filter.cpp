@@ -84,8 +84,8 @@ std::shared_ptr<AbstractStatisticsObject> RangeFilter<T>::slice_with_predicate(
       }
     } break;
     case PredicateCondition::Between: {
-      DebugAssert(variant_value2, "BETWEEN needs a second value.");
-      const auto value2 = type_cast<T>(*variant_value2);
+      DebugAssert(static_cast<bool>(variant_value2), "BETWEEN needs a second value.");
+      const auto value2 = type_cast_variant<T>(*variant_value2);
       return slice_with_predicate(PredicateCondition::GreaterThanEquals, value)
           ->slice_with_predicate(PredicateCondition::LessThanEquals, value2);
     }
@@ -158,7 +158,7 @@ std::unique_ptr<RangeFilter<T>> RangeFilter<T>::build_filter(const pmr_vector<T>
 template <typename T>
 bool RangeFilter<T>::_does_not_contain(const PredicateCondition predicate_type, const AllTypeVariant& variant_value,
                                        const std::optional<AllTypeVariant>& variant_value2) const {
-  const auto value = type_cast<T>(variant_value);
+  const auto value = type_cast_variant<T>(variant_value);
   // Operators work as follows: value_from_table <operator> value
   // e.g. OpGreaterThan: value_from_table > value
   // thus we can exclude chunk if value >= _max since then no value from the table can be greater than value
