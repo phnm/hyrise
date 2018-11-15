@@ -11,8 +11,6 @@
 
 namespace opossum {
 
-DpCcp::DpCcp(const std::shared_ptr<AbstractCostEstimator>& cost_estimator) : _cost_estimator(cost_estimator) {}
-
 std::shared_ptr<AbstractLQPNode> DpCcp::operator()(const JoinGraph& join_graph,
                                                    const AbstractCostEstimator& cost_estimator,
                                                    const std::shared_ptr<OptimizationContext>& context) {
