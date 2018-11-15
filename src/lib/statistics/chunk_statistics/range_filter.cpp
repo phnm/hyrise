@@ -38,7 +38,7 @@ std::shared_ptr<AbstractStatisticsObject> RangeFilter<T>::slice_with_predicate(
   }
 
   std::vector<std::pair<T, T>> ranges;
-  const auto value = type_cast<T>(variant_value);
+  const auto value = type_cast_variant<T>(variant_value);
 
   // If value is on range edge, we do not take the opportunity to slightly improve the new object.
   // The impact should be small.
@@ -193,8 +193,8 @@ bool RangeFilter<T>::_does_not_contain(const PredicateCondition predicate_type, 
       return _ranges.size() == 1 && _ranges.front().first == value && _ranges.front().second == value;
     }
     case PredicateCondition::Between: {
-      Assert(variant_value2, "Between operator needs two values.");
-      const auto value2 = type_cast<T>(*variant_value2);
+      Assert(static_cast<bool>(variant_value2), "Between operator needs two values.");
+      const auto value2 = type_cast_variant<T>(*variant_value2);
 
       if (value > value2) {
         return true;

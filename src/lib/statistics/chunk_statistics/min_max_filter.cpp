@@ -35,7 +35,7 @@ std::shared_ptr<AbstractStatisticsObject> MinMaxFilter<T>::slice_with_predicate(
   }
 
   T min, max;
-  const auto value = type_cast<T>(variant_value);
+  const auto value = type_cast_variant<T>(variant_value);
 
   // If value is either _min or _max, we do not take the opportunity to slightly improve the new object.
   // We do not know the actual previous/next value, and for strings it's not that simple.
