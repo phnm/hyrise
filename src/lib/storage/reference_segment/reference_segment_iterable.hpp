@@ -74,6 +74,10 @@ class ReferenceSegmentIterable : public SegmentIterable<ReferenceSegmentIterable
 
     void increment() { ++_pos_list_it; }
 
+    void advance(std::ptrdiff_t n) { _pos_list_it += n; }
+
+    std::ptrdiff_t distance_to(const SingleChunkIterator& other) const { return other._pos_list_it - _pos_list_it; }
+
     bool equal(const SingleChunkIterator& other) const { return _pos_list_it == other._pos_list_it; }
 
     SegmentIteratorValue<T> dereference() const {
@@ -119,6 +123,10 @@ class ReferenceSegmentIterable : public SegmentIterable<ReferenceSegmentIterable
     friend class boost::iterator_core_access;  // grants the boost::iterator_facade access to the private interface
 
     void increment() { ++_pos_list_it; }
+
+    void advance(std::ptrdiff_t n) { _pos_list_it += n; }
+
+    std::ptrdiff_t distance_to(const MultipleChunkIterator& other) const { return other._pos_list_it - _pos_list_it; }
 
     bool equal(const MultipleChunkIterator& other) const { return _pos_list_it == other._pos_list_it; }
 

@@ -73,6 +73,13 @@ class DictionarySegmentIterable : public PointAccessibleSegmentIterable<Dictiona
 
     bool equal(const Iterator& other) const { return _attribute_it == other._attribute_it; }
 
+    void advance(std::ptrdiff_t n) {
+      _attribute_it += n;
+      _chunk_offset += n;
+    }
+
+    std::ptrdiff_t distance_to(const Iterator& other) const { return other._attribute_it - _attribute_it; }
+
     SegmentIteratorValue<T> dereference() const {
       const auto value_id = static_cast<ValueID>(*_attribute_it);
       const auto is_null = (value_id == _null_value_id);

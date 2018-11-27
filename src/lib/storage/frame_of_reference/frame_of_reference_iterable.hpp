@@ -86,6 +86,15 @@ class FrameOfReferenceIterable : public PointAccessibleSegmentIterable<FrameOfRe
 
     bool equal(const Iterator& other) const { return _offset_value_it == other._offset_value_it; }
 
+    void advance(std::ptrdiff_t n) {
+      // For now, the lazy approach
+      for (std::ptrdiff_t i = 0; i < n; ++i) {
+        increment();
+      }
+    }
+
+    std::ptrdiff_t distance_to(const Iterator& other) const { return other._offset_value_it - _offset_value_it; }
+
     SegmentIteratorValue<T> dereference() const {
       const auto value = static_cast<T>(*_offset_value_it) + *_block_minimum_it;
       return SegmentIteratorValue<T>{value, *_null_value_it, _chunk_offset};

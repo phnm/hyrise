@@ -50,7 +50,6 @@ std::shared_ptr<PosList> ColumnVsColumnTableScanImpl::scan_chunk(ChunkID chunk_i
   //      * reference segments is ruled out. Moreover it is not possible to compare strings to any of the four numerical
   //      * data types. Therefore, we need to check for these cases and exclude them via the constexpr-if which
   //      * reduces the number of combinations to 85.
-       
 
   //     constexpr auto LEFT_IS_REFERENCE_SEGMENT = (std::is_same<LeftSegmentType, ReferenceSegment>{});
   //     constexpr auto RIGHT_IS_REFERENCE_SEGMENT = (std::is_same<RightSegmentType, ReferenceSegment>{});

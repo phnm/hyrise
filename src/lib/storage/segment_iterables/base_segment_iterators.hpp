@@ -46,7 +46,7 @@ class JitBaseSegmentIterator {};
  * };
  */
 template <typename Derived, typename Value>
-class BaseSegmentIterator : public boost::iterator_facade<Derived, Value, boost::forward_traversal_tag, Value>,
+class BaseSegmentIterator : public boost::iterator_facade<Derived, Value, boost::random_access_traversal_tag, Value>,
                             public JitBaseSegmentIterator {};
 
 /**
@@ -89,6 +89,11 @@ class BasePointAccessSegmentIterator : public BaseSegmentIterator<Derived, Value
   void increment() { ++_position_filter_it; }
   bool equal(const BasePointAccessSegmentIterator& other) const {
     return (_position_filter_it == other._position_filter_it);
+  }
+
+  void advance(std::ptrdiff_t n) { _position_filter_it += n; }
+  std::ptrdiff_t distance_to(const BasePointAccessSegmentIterator& other) const {
+    return other._position_filter_it - _position_filter_it;
   }
 
  private:
