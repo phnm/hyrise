@@ -38,22 +38,27 @@ class AbstractTableScanImpl {
   void __attribute__((noinline))
   _scan_with_iterators(const BinaryFunctor func, LeftIterator left_it, const LeftIterator left_end,
                        const ChunkID chunk_id, PosList& matches_out, [[maybe_unused]] RightIterator right_it) const {
+    matches_out.reserve(100'000);
+    // size_t i = 0;
     for (; left_it != left_end; ++left_it) {
       if constexpr (std::is_same_v<RightIterator, std::false_type>) {
         const auto left = *left_it;
 
         if ((!CheckForNull || !left.is_null()) && func(left)) {
+          // matches_out[i++] = RowID{chunk_id, left.chunk_offset()}; 
           matches_out.emplace_back(RowID{chunk_id, left.chunk_offset()});
         }
       } else {
         const auto left = *left_it;
         const auto right = *right_it;
         if ((!CheckForNull || (!left.is_null() && !right.is_null())) && func(left, right)) {
+          // matches_out[i++] = RowID{chunk_id, left.chunk_offset()}; 
           matches_out.emplace_back(RowID{chunk_id, left.chunk_offset()});
         }
         ++right_it;
       }
     }
+  // matches_out.resize(i);
   }
 
   /**@}*/
