@@ -46,11 +46,6 @@ class AnySegmentIteratorWrapper : public AnySegmentIteratorWrapperBase<T> {
 
   void advance(std::ptrdiff_t n) final { _iterator += n; }
 
-  std::ptrdiff_t distance_to(const AnySegmentIteratorWrapperBase<T>* other) const final {
-    const auto casted_other = static_cast<const AnySegmentIteratorWrapper<T, Iterator>*>(other);
-    return casted_other->_iterator - _iterator;
-  }
-
   /**
    * Although `other` could have a different type, it is practically impossible,
    * since AnySegmentIterator is only used within AnySegmentIterable.
@@ -58,6 +53,11 @@ class AnySegmentIteratorWrapper : public AnySegmentIteratorWrapperBase<T> {
   bool equal(const AnySegmentIteratorWrapperBase<T>* other) const final {
     const auto casted_other = static_cast<const AnySegmentIteratorWrapper<T, Iterator>*>(other);
     return _iterator == casted_other->_iterator;
+  }
+
+  std::ptrdiff_t distance_to(const AnySegmentIteratorWrapperBase<T>* other) const final {
+    const auto casted_other = static_cast<const AnySegmentIteratorWrapper<T, Iterator>*>(other);
+    return casted_other->_iterator - _iterator;
   }
 
   SegmentIteratorValue<T> dereference() const final {
@@ -120,10 +120,8 @@ class AnySegmentIterator : public BaseSegmentIterator<AnySegmentIterator<T>, Seg
   void increment() { _wrapper->increment(); }
   void advance(std::ptrdiff_t n) { _wrapper->advance(n); }
   bool equal(const AnySegmentIterator<T>& other) const { return _wrapper->equal(other._wrapper.get()); }
+  std::ptrdiff_t distance_to(const AnySegmentIterator& other) const { return _wrapper->distance_to(other._wrapper.get()); }
   SegmentIteratorValue<T> dereference() const { return _wrapper->dereference(); }
-  std::ptrdiff_t distance_to(const AnySegmentIterator& other) const {
-    return other._wrapper->distance_to(_wrapper.get());
-  }
 
  private:
   std::unique_ptr<opossum::detail::AnySegmentIteratorWrapperBase<T>> _wrapper;

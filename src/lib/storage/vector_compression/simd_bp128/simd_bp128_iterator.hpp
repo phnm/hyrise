@@ -37,7 +37,7 @@ class SimdBp128Iterator : public BaseCompressedVectorIterator<SimdBp128Iterator>
 
   void advance(std::ptrdiff_t n) {
     // The easy way for now
-    for (std::ptrdiff_t i = 0; i < n; ++i) {
+    for (std::ptrdiff_t step = 0; step < n; ++step) {
       increment();
     }
   }

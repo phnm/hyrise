@@ -66,14 +66,14 @@ class RunLengthSegmentIterable : public PointAccessibleSegmentIterable<RunLength
       }
     }
 
-    bool equal(const Iterator& other) const { return _current_position == other._current_position; }
-
     void advance(std::ptrdiff_t n) {
       // The easy way for now
-      for (std::ptrdiff_t i = 0; i < n; ++i) {
+      for (std::ptrdiff_t step = 0; step < n; ++step) {
         increment();
       }
     }
+
+    bool equal(const Iterator& other) const { return _current_position == other._current_position; }
 
     std::ptrdiff_t distance_to(const Iterator& other) const { return other._current_position - _current_position; }
 

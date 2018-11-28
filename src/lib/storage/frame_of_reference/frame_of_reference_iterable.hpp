@@ -84,14 +84,14 @@ class FrameOfReferenceIterable : public PointAccessibleSegmentIterable<FrameOfRe
       }
     }
 
-    bool equal(const Iterator& other) const { return _offset_value_it == other._offset_value_it; }
-
     void advance(std::ptrdiff_t n) {
       // For now, the lazy approach
-      for (std::ptrdiff_t i = 0; i < n; ++i) {
+      for (std::ptrdiff_t step = 0; step < n; ++step) {
         increment();
       }
     }
+
+    bool equal(const Iterator& other) const { return _offset_value_it == other._offset_value_it; }
 
     std::ptrdiff_t distance_to(const Iterator& other) const { return other._offset_value_it - _offset_value_it; }
 

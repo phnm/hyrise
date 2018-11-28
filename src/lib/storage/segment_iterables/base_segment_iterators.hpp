@@ -87,11 +87,13 @@ class BasePointAccessSegmentIterator : public BaseSegmentIterator<Derived, Value
   friend class boost::iterator_core_access;  // grants the boost::iterator_facade access to the private interface
 
   void increment() { ++_position_filter_it; }
+
+  void advance(std::ptrdiff_t n) { _position_filter_it += n; }
+
   bool equal(const BasePointAccessSegmentIterator& other) const {
     return (_position_filter_it == other._position_filter_it);
   }
 
-  void advance(std::ptrdiff_t n) { _position_filter_it += n; }
   std::ptrdiff_t distance_to(const BasePointAccessSegmentIterator& other) const {
     return other._position_filter_it - _position_filter_it;
   }
