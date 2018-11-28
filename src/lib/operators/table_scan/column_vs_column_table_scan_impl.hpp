@@ -34,7 +34,7 @@ class ColumnVsColumnTableScanImpl : public AbstractTableScanImpl {
  private:
   const std::shared_ptr<const Table> _in_table;
   const ColumnID _left_column_id;
-  [[maybe_unused]] const PredicateCondition _predicate_condition;
+  const PredicateCondition _predicate_condition;
   const ColumnID _right_column_id;
 };
 
