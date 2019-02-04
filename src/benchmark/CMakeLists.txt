@@ -18,6 +18,7 @@ add_executable(
     statistics/generate_table_statistics_benchmark.cpp
     tpch_data_micro_benchmark.cpp
     tpch_table_generator_benchmark.cpp
+    lz4_benchmark.cpp
 )
 
 target_link_libraries(
