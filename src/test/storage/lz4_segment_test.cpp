@@ -338,6 +338,7 @@ TEST_F(StorageLZ4SegmentTest, CompressDictionaryIntSegment) {
   EXPECT_EQ(result.first, 2 * (num_rows - 1));
 
   // Finally, decompress the whole segment.
+  auto decompressed_data = lz4_segment->decompress();
   EXPECT_EQ(decompressed_data[1234], 2468);
   EXPECT_EQ(decompressed_data[4312], 8624);
   EXPECT_EQ(decompressed_data[20124], 40248);
