@@ -315,20 +315,20 @@ TEST_F(StorageLZ4SegmentTest, CompressDictionaryIntSegment) {
 
   // Access elements without cache
   EXPECT_EQ(lz4_segment->decompress(ChunkOffset{1u}), 2);
-  EXPECT_EQ(lz4_segment->decompress(ChunkOffset{40123u}), 80246);
+  EXPECT_EQ(lz4_segment->decompress(ChunkOffset{10123u}), 20246);
   EXPECT_EQ(lz4_segment->decompress(ChunkOffset{200u}), 400);
 
   // Access elements with cache
   auto cache = std::vector<char>{};
   std::pair<int, size_t> result;
 
-  result = lz4_segment->decompress(ChunkOffset{40123u}, std::nullopt, cache);
+  result = lz4_segment->decompress(ChunkOffset{20123u}, std::nullopt, cache);
   EXPECT_EQ(cache.size(), block_size);
-  EXPECT_EQ(result.first, 80246);
+  EXPECT_EQ(result.first, 40246);
 
-  result = lz4_segment->decompress(ChunkOffset{40124u}, result.second, cache);
+  result = lz4_segment->decompress(ChunkOffset{20124u}, result.second, cache);
   EXPECT_EQ(cache.size(), block_size);
-  EXPECT_EQ(result.first, 80248);
+  EXPECT_EQ(result.first, 40248);
 
   result = lz4_segment->decompress(ChunkOffset{3003u}, result.second, cache);
   EXPECT_EQ(cache.size(), block_size);
@@ -341,7 +341,7 @@ TEST_F(StorageLZ4SegmentTest, CompressDictionaryIntSegment) {
   auto decompressed_data = lz4_segment->decompress();
   EXPECT_EQ(decompressed_data[1234], 2468);
   EXPECT_EQ(decompressed_data[4312], 8624);
-  EXPECT_EQ(decompressed_data[40124], 80248);
+  EXPECT_EQ(decompressed_data[20124], 40248);
 }
 
 }  // namespace opossum
