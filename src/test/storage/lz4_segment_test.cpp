@@ -294,12 +294,12 @@ TEST_F(StorageLZ4SegmentTest, CompressDictionaryStringSegment) {
   auto decompressed_data = lz4_segment->decompress();
   EXPECT_EQ(decompressed_data[1234], "this is element 1234");
   EXPECT_EQ(decompressed_data[4312], "this is element 4312");
-  EXPECT_EQ(decompressed_data[40124], "this is element 40124");
+  EXPECT_EQ(decompressed_data[4014], "this is element 4014");
 }
 
 TEST_F(StorageLZ4SegmentTest, CompressDictionaryIntSegment) {
   const auto block_size = LZ4Encoder::_block_size;
-  const auto num_rows = Chunk::DEFAULT_SIZE / 8;
+  const auto num_rows = Chunk::DEFAULT_SIZE / 4;
 
   for (auto index = size_t{0u}; index < num_rows; ++index) {
     vs_int->append(static_cast<int>(index * 2));
