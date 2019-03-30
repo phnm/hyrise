@@ -252,7 +252,7 @@ TEST_F(StorageLZ4SegmentTest, CompressMultiBlockStringSegment) {
 
 TEST_F(StorageLZ4SegmentTest, CompressDictionaryStringSegment) {
   const auto block_size = LZ4Encoder::_block_size;
-  const auto num_rows = Chunk::DEFAULT_SIZE / 10;
+  const auto num_rows = Chunk::DEFAULT_SIZE / 20;
 
   for (auto index = size_t{0u}; index < num_rows; ++index) {
     vs_str->append(AllTypeVariant{pmr_string{"this is element " + std::to_string(index)}});
@@ -299,7 +299,7 @@ TEST_F(StorageLZ4SegmentTest, CompressDictionaryStringSegment) {
 
 TEST_F(StorageLZ4SegmentTest, CompressDictionaryIntSegment) {
   const auto block_size = LZ4Encoder::_block_size;
-  const auto num_rows = Chunk::DEFAULT_SIZE / 2;
+  const auto num_rows = Chunk::DEFAULT_SIZE / 8;
 
   for (auto index = size_t{0u}; index < num_rows; ++index) {
     vs_int->append(static_cast<int>(index * 2));
