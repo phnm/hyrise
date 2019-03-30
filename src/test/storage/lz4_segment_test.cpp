@@ -339,9 +339,9 @@ TEST_F(StorageLZ4SegmentTest, CompressDictionaryIntSegment) {
 
   // Finally, decompress the whole segment.
   auto decompressed_data = lz4_segment->decompress();
-  EXPECT_EQ(decompressed_data[1234], 2468);
-  EXPECT_EQ(decompressed_data[4312], 8624);
-  EXPECT_EQ(decompressed_data[20124], 40248);
+  for (auto index = size_t{0u}; index < decompressed_data.size(); ++index) {
+    EXPECT_EQ(decompressed_data[index], index * 2);
+  }
 }
 
 }  // namespace opossum
